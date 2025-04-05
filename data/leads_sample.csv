@@ -1,0 +1,6 @@
+first_name,last_name,email,company_name,job_title,industry,pain_points,interests
+John,Doe,john.doe@example.com,Acme Restaurant Supplies,CEO,Food Service,"long sales cycles, finding qualified staff",inventory management
+Jane,Smith,jane.smith@example.com,Elite Tailoring,Owner,Fashion,"customer acquisition, marketing costs",celebrity clients
+Michael,Johnson,michael.johnson@example.com,Tech Solutions Inc,Sales Manager,Technology,"lead qualification, follow-up consistency",automation tools
+Sarah,Williams,sarah.williams@example.com,Healthcare Partners,Director,Healthcare,"proposal creation, competitive market",patient care systems
+Robert,Brown,robert.brown@example.com,Construction Experts,President,Construction,"seasonal business, project tracking",sustainable building
