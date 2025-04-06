@@ -1,0 +1,6 @@
+{
+  "name": "general_followup",
+  "content": "Hi {name},\n\nWanted to follow up on our last conversation.\n\nBest regards,\n{our_name}",
+  "industry": "general",
+  "trigger": "standard_followup"
+}

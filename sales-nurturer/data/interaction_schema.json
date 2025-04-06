@@ -1,0 +1,15 @@
+{
+  "collections": {
+    "interactions": {
+      "fields": {
+        "lead_id": {"type": "string", "index": true},
+        "action": {"type": "string"},
+        "timestamp": {"type": "datetime"},
+        "opened": {"type": "boolean", "default": false},
+        "replied": {"type": "boolean", "default": false},
+        "delivered": {"type": "boolean"},
+        "error": {"type": "string"}
+      }
+    }
+  }
+}

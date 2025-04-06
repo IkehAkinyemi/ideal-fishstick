@@ -1,0 +1,7 @@
+{
+  "name": "restaurant_initial",
+  "content": "<html>\n<body>\nHi {name},<br><br>\nNoticed your need for {pain_points}. Our locally-sourced produce might help!<br><br>\nBest,<br>\n{our_name}\n{tracking_pixel}\n</body>\n</html>",
+  "industry": "Restaurant",
+  "trigger": "initial_contact",
+  "is_html": true
+}

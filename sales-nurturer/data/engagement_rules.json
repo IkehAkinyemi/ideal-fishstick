@@ -1,0 +1,11 @@
+{
+  "unsubscribe_triggers": ["unsubscribe", "not interested", "stop"],
+  "min_engagement": {
+    "open_rate": 0.3,
+    "reply_rate": 0.1
+  },
+  "cooldown_periods": {
+    "after_conversion": 30,
+    "after_negative": 90
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "fashion_celeb",
+  "content": "<html>\n<body>\nDear {name},<br><br>\nYour unique style deserves unique fabrics. Let's create something amazing!<br><br>\nCheers,<br>\n{our_name}\n{tracking_pixel}\n</body>\n</html>",
+  "industry": "Fashion",
+  "trigger": "celebrity_pitch",
+  "is_html": true
+}
