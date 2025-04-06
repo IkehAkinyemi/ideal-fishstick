@@ -1,4 +1,4 @@
-.PHONY: venv install test run demo clean
+.PHONY: venv install test run demo clean register discover
 
 venv:
 	@echo ">>> Creating virtual environment..."
@@ -10,23 +10,24 @@ install:
 	.venv/bin/pip install --upgrade pip
 	.venv/bin/pip install -r requirements.txt
 
-test:
-	@echo ">>> Running tests..."
-	.venv/bin/python -m pytest tests/ -v
-
-run:
-	@echo ">>> Starting sales nurturer..."
-	.venv/bin/python src/main.py parse --source data/leads_sample.csv --type csv
-	.venv/bin/python src/main.py nurture --leads parsed_leads.json --templates data/templates/
-
-demo: install
-	@echo ">>> Running full demo..."
-	.venv/bin/python src/main.py register --name "SalesNurturer"
-	.venv/bin/python src/main.py discover
-	make run
-
 clean:
 	@echo ">>> Cleaning up..."
 	rm -rf .venv
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 	rm -f *.log *.json
+
+run: install
+	@echo ">>> Starting main pipeline..."
+	.venv/bin/python -m sales_nurturer.main
+
+register:
+	@echo ">>> Registering with Agentverse..."
+	.venv/bin/python -m sales_nurturer.agents.agentverse
+
+discover:
+	@echo ">>> Discovering agents..."
+	curl -X GET "${AGENTVERSE_API}/discover?capability=lead_nurturing"
+
+test:
+	@echo ">>> Running tests..."
+	.venv/bin/python -m pytest tests/

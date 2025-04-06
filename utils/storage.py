@@ -1,44 +1,37 @@
 import chromadb
 from chromadb.config import Settings
-from typing import List, Dict, Optional, Union
 import json
-import logging
 import os
-from datetime import datetime
+from typing import List, Dict, Optional
+import logging
 
 class VectorDB:
     def __init__(self, persist_dir: str = "data/vector_db"):
-        """
-        Initialize ChromaDB client with persistent storage
-        """
-        self.logger = logging.getLogger("vector_db")
-        self._setup_logging()
-        
-        # Create directory if not exists
+        self.logger = self._setup_logging()
+        self.client = chromadb.Client(self._get_settings(persist_dir))
+        self.collections = self._init_collections()
+        self._preload_templates()  # New template loading
+
+    def _get_settings(self, persist_dir: str) -> Settings:
+        """Configure ChromaDB settings"""
         os.makedirs(persist_dir, exist_ok=True)
-        
-        self.client = chromadb.Client(Settings(
+        return Settings(
             chroma_db_impl="duckdb+parquet",
             persist_directory=persist_dir
-        ))
-        
-        # Predefined collections
-        self._init_collections()
-        
-    def _setup_logging(self):
-        """Configure logging for storage operations"""
-        logging.basicConfig(
-            level=logging.INFO,
-            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            handlers=[
-                logging.FileHandler("data/vector_db.log"),
-                logging.StreamHandler()
-            ]
         )
-    
-    def _init_collections(self):
-        """Initialize required collections with validation"""
-        self.collections = {
+
+    def _setup_logging(self) -> logging.Logger:
+        """Configure logging"""
+        logger = logging.getLogger("vector_db")
+        logger.setLevel(logging.INFO)
+        handler = logging.FileHandler("data/vector_db.log")
+        handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+        logger.addHandler(handler)
+        return logger
+
+    def _init_collections(self) -> Dict[str, chromadb.Collection]:
+        """Initialize required collections"""
+        return {
             "leads": self.client.get_or_create_collection(
                 name="leads",
                 metadata={"hnsw:space": "cosine"}
@@ -52,6 +45,42 @@ class VectorDB:
                 metadata={"hnsw:space": "cosine"}
             )
         }
+
+    def _preload_templates(self):
+        """Load template data from files during initialization"""
+        template_dir = "data/templates"
+        if not os.path.exists(template_dir):
+            self.logger.warning(f"Template directory {template_dir} not found")
+            return
+
+        loaded_count = 0
+        for filename in os.listdir(template_dir):
+            if not filename.endswith('.json'):
+                continue
+
+            try:
+                with open(os.path.join(template_dir, filename)) as f:
+                    template = json.load(f)
+                
+                # Generate consistent ID from template name
+                template_id = f"template_{template['name']}"
+                
+                self.collections["templates"].upsert(
+                    documents=[template["content"]],
+                    metadatas=[{
+                        "name": template["name"],
+                        "industry": template.get("industry", "general"),
+                        "is_html": template.get("is_html", False),
+                        "trigger": template.get("trigger", "standard")
+                    }],
+                    ids=[template_id]
+                )
+                loaded_count += 1
+                
+            except Exception as e:
+                self.logger.error(f"Failed to load template {filename}: {str(e)}")
+
+        self.logger.info(f"Preloaded {loaded_count} templates")
     
     def upsert(
         self,

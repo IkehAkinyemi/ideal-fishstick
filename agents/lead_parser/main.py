@@ -2,7 +2,7 @@ import pandas as pd
 import pdfplumber
 from typing import List, Dict
 import hashlib
-import chromadb  # Lightweight vector DB for hackathon
+import chromadb
 
 class LeadParser:
     def __init__(self):
